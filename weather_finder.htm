@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather Finder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #cceeff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+    }
+
+    input, button {
+      padding: 0.5rem;
+      margin: 0.25rem;
+      font-size: 1rem;
+    }
+
+    .weather {
+      background: #fff;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      width: 300px;
+      text-align: center;
+    }
+
+    .error {
+      color: red;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Weather Finder</h1>
+
+  <input type="text" id="cityInput" placeholder="Enter city name" />
+  <button onclick="getWeather()">Search</button>
+
+  <div class="error" id="errorMsg"></div>
+
+  <div class="weather" id="weatherBox" style="display: none;">
+    <h2 id="cityName"></h2>
+    <p id="description"></p>
+    <p><strong id="temperature"></strong></p>
+    <p>Humidity: <span id="humidity"></span>%</p>
+    <p>Wind: <span id="wind"></span> m/s</p>
+  </div>
+
+  <script>
+    const API_KEY = "3302dd89a0b32a2f71b7095efbc4193c"; // Replace with your OpenWeatherMap API key
+
+    async function getWeather() {
+      const city = document.getElementById("cityInput").value.trim();
+      const weatherBox = document.getElementById("weatherBox");
+      const errorMsg = document.getElementById("errorMsg");
+
+      if (!city) return;
+
+      try {
+        const response = await fetch(
+          \https: //api.openweathermap.org/data/2.5/weather?q=\${city}&units=metric&appid=\${API_KEY}\
+        );
+
+        if (!response.ok) throw new Error("City not found");
+
+        const data = await response.json();
+
+        document.getElementById("cityName").textContent = data.name;
+        document.getElementById("description").textContent = data.weather[0].description;
+        document.getElementById("temperature").textContent = data.main.temp + "°C";
+        document.getElementById("humidity").textContent = data.main.humidity;
+        document.getElementById("wind").textContent = data.wind.speed;
+
+        weatherBox.style.display = "block";
+        errorMsg.textContent = "";
+
+      } catch (err) {
+        weatherBox.style.display = "none";
+        errorMsg.textContent = err.message;
+      }
+    }
+  </script>
+
+</body>
+</html>
